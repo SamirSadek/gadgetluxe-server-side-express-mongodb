@@ -39,7 +39,11 @@ async function run() {
       const result = await cartCollection.insertOne(newProducts);
       res.send(result);
     });
-
+    app.get("/addCart", async (req, res) => {
+      const cursor = cartCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
     app.get("/products", async (req, res) => {
       const cursor = productCollection.find();
       const result = await cursor.toArray();

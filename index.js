@@ -24,6 +24,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
     const productCollection = client.db("productDB").collection("product");
+    const cartCollection = client.db("cartDB").collection("cart");
     const brandCollection = client.db("brandDB").collection("brand");
 
     app.post("/products", async (req, res) => {
@@ -32,6 +33,13 @@ async function run() {
       const result = await productCollection.insertOne(newProducts);
       res.send(result);
     });
+    app.post("/addCart", async (req, res) => {
+      const newProducts = req.body;
+      console.log(newProducts);
+      const result = await cartCollection.insertOne(newProducts);
+      res.send(result);
+    });
+
     app.get("/products", async (req, res) => {
       const cursor = productCollection.find();
       const result = await cursor.toArray();
@@ -50,6 +58,7 @@ async function run() {
       const options = {upsert: true}
       const updatedProduct =req.body
       const product = {
+
         $set: {
           name: updatedProduct.name,
           image: updatedProduct.image,
@@ -58,6 +67,7 @@ async function run() {
           price: updatedProduct.price,
           rating: updatedProduct.rating,
         }
+        
       }
     const result = await productCollection.updateOne(filter, product, options)
     res.send(result)
